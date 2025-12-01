@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use("/api", router);
 
-app.use("/", (req: Request, res: Response) => {
+app.use("/", (_req: Request, res: Response) => {
   res.json({ message: "Everything is fine for now..." });
 });
 
