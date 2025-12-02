@@ -37,7 +37,6 @@ export class WingetService {
 
           // handle specific status codes
           if (err.status === 404) {
-            console.error(err.message)
             this.error.set("no packages found.");
           } else if (err.status === 400) {
             this.error.set("invalid search query.");
@@ -70,7 +69,6 @@ export class WingetService {
 
           // handle specific status codes
           if (err.status === 404) {
-            console.error(err.message)
             this.error.set("no packages found.");
           } else if (err.status === 400) {
             this.error.set("invalid search query.");
