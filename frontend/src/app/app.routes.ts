@@ -1,3 +1,36 @@
 import { Routes } from '@angular/router';
+import { MainPage } from './pages/main-page/main-page';
+import { WingetPage } from './pages/winget-page/winget-page';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    title: 'Root',
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
+  {
+    title: 'Home',
+    path: 'home',
+    pathMatch: 'full',
+    component: MainPage,
+  },
+  {
+    title: 'Arch',
+    path: 'arch/:packagename',
+    pathMatch: 'full',
+    redirectTo: 'home',
+  },
+  {
+    title: 'APT',
+    path: 'apt/:packagename',
+    pathMatch: 'full',
+    redirectTo: 'home',
+  },
+  {
+    title: 'winget',
+    path: 'winget/:packagename',
+    pathMatch: 'full',
+    component: WingetPage,
+  },
+];

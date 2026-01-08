@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Winget Package</h2>
+<mat-dialog-content>
+  <h2>{{ wingetService.wingetPackageSpecific()?.Id }}</h2>
+  <h2>{{ wingetService.wingetPackageSpecific()?.Latest?.Name }}</h2>
+  <p>{{ wingetService.wingetPackageSpecific()?.Latest?.Description }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton (click)="closeDialog()">Close</button>
+</mat-dialog-actions>
