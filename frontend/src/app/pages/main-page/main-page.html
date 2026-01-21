@@ -1,25 +1,34 @@
-<div class="flex flex-col items-center justify-center h-screen">
-  <div>
-    <mat-form-field>
-      <mat-label>Searching Term</mat-label>
+<div class="flex flex-col items-center justify-center h-screen bg-white px-4">
+  
+  <h1 class="text-4xl font-bold text-gray-800 mb-8 tracking-tight">Package Explorer</h1>
+
+  <div class="flex flex-col md:flex-row gap-3 w-full max-w-2xl items-start">
+    
+    <mat-form-field appearance="fill" class="w-full md:flex-grow subscript-wrapper-hidden">
+      <mat-label>Search for packages</mat-label>
       <input
         matInput
-        placeholder="Search for package"
         [ngModel]="searchTerm()"
         (ngModelChange)="searchTerm.set($event)"
       />
+      <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
-  </div>
-  <div class="flex flex-row">
-    <mat-form-field>
-      <mat-label>Search Mode</mat-label>
+
+    <mat-form-field appearance="fill" class="w-full md:w-48 subscript-wrapper-hidden">
+      <mat-label>Mode</mat-label>
       <mat-select [ngModel]="selectedMode()" (ngModelChange)="selectedMode.set($event)">
         @for (item of searchModes; track $index) {
-        <mat-option [value]="item"> {{ item.mode }} </mat-option>
+          <mat-option [value]="item"> {{ item.mode }} </mat-option>
         }
       </mat-select>
     </mat-form-field>
 
-    <button matButton="filled" class="search-button" (click)="searchPackage()">Search</button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="h-[56px] w-full md:w-auto px-8" 
+      (click)="searchPackage()">
+      GO
+    </button>
   </div>
 </div>

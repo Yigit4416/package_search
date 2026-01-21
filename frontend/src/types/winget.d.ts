@@ -1,6 +1,6 @@
 export type WingetPackage = {
   Id: string;
-  Versions: string[];
+  Versions: Versions[];
   Latest: {
     Name: string;
     Publisher: string;
@@ -20,6 +20,10 @@ export type WingetPackage = {
   updatedAt: string;
   SearchScore: number;
 };
+
+type Versions = {
+  version: string;
+}
 
 export type WingetQueryResponse = {
   query: string;

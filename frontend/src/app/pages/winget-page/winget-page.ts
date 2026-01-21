@@ -12,33 +12,13 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { WingetDialog } from '../../components/dialogs/winget-dialog/winget-dialog';
-
-/**
-1. Standalone Component: The component is now standalone: true, which is modern Angular practice. It manages its own dependencies.
-
-2. Efficient Change Detection: changeDetection: ChangeDetectionStrategy.OnPush tells Angular to only check for changes when its inputs change, an event occurs, or a signal it uses is updated. This improves performance.
-
- 3. Accessing the Route: We inject ActivatedRoute, an Angular service that holds information about the current route.
-
-4. Reactive Route Parameters:
-  * toSignal(this.route.params) converts the route parameters Observable into a Signal. Signals are the new reactive primitive in Angular.
-  * The result is stored in the params signal.
-
-5. Deriving the Package Name:
-  * computed(() => this.params()['packagename'] ?? '') creates a computed signal called packagename.
-  * This packagename signal automatically re-evaluates whenever the params signal changes.
-  * It extracts the packagename value from the route parameters. If packagename doesn't exist, it defaults to an empty string ('').
-
-6. Logging Changes: The effect in the constructor will run whenever the packagename signal changes, logging the current value to the console. This is useful for debugging.
-
-In short, packagename is now a signal that will always reflect the :packagename part of your URL, automatically updating whenever the route changes. You can use this packagename signal
-directly in your component's template
- */
+import { MatIcon } from "@angular/material/icon";
+import { CompactSearchComponent } from "../../components/compact-search/compact-search";
 
 @Component({
   selector: 'app-winget-page',
   standalone: true,
-  imports: [],
+  imports: [MatIcon, CompactSearchComponent],
   templateUrl: './winget-page.html',
   styleUrl: './winget-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,12 +44,35 @@ export class WingetPage {
   }
 
   detailPage(selectedPackage: string) {
+    console.log(selectedPackage)
     if (!this.wingetService.loading()) {
-      const dialog = this.dialgogRef.open(WingetDialog, {
+      const dialogRef = this.dialgogRef.open(WingetDialog, {
         data: { packageName: selectedPackage },
-        height: '400px',
-        width: '600px',
-      })
+        
+        // 1. Responsive Width:
+        // Occupy full width on mobile, but cap it at 650px on desktop
+        width: '90%',
+        maxWidth: '650px',
+
+        // 2. Auto Height:
+        // Remove 'height' property. Let the content dictate the height.
+        // Add maxHeight to ensure it doesn't overflow the screen.
+        maxHeight: '90vh', 
+        
+        // 3. Optional: Prevent auto-focusing the first button (aesthetic choice)
+        autoFocus: false 
+      });
     }
+  }
+
+  handleSearch(searchTerm: string) {
+    console.log('Filtreleniyor:', searchTerm);
+    // Buraya servisi çağıran kod gelecek
+    // Örn: this.wingetService.search(searchTerm);
+  }
+
+  ngOnInit() {
+    console.log(this.packagename())
+    console.log(this.wingetService.wingetSearch())
   }
 }

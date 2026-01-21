@@ -7,8 +7,7 @@ import cors from "cors";
 
 dotenv.config();
 const router = express.Router();
-cors();
-
+router.use(cors())
 
 router.use("/deb", debRouter)
 router.use("/arch", archRouter)
