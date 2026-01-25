@@ -149,7 +149,7 @@ export class ArchPage {
       this.dialog.open(AurDialog, {
         ...dialogConfig,
         data: {
-          packageName: pkg.name, // Use name for the query, it's cleaner
+          packageName: pkg.realId, // Use name for the query, it's cleaner
           initialData: originalPkg
         }
       });
@@ -160,7 +160,7 @@ export class ArchPage {
       this.dialog.open(PacmanDialog, {
         ...dialogConfig,
         data: {
-          packageName: pkg.name,
+          packageName: pkg.realId,
           initialData: originalPkg
         }
       });

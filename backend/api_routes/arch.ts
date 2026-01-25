@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import express, { Request, Response } from "express"
 import { BadRequestError, NotFoundError } from "../error_class/custom-errors"
 import { ArchPackage, ArchPackageQueryResponse, ArchPackageSearchResponse } from "../types/pacman"
-import { aurGetData, aurStoreData, pacmanGetData, pacmanStoreData } from "../db/test_temp"
+import { aurGetData, aurStoreData, pacmanGetData, pacmanStoreData } from "../db/cache.js";
 import { AurQueryResponse, AurResponse } from "../types/aur"
 
 dotenv.config()
@@ -14,12 +14,12 @@ archRouter.get("/", async (_req: Request, res: Response) => {
 
 archRouter.get("/pacman/search", async (req: Request, res: Response) => {
   try {
-    const { query } = req.query
+    const query = req.query.query as string
     if (!query || typeof query !== "string") {
       throw new BadRequestError("Query is required")
     }
 
-    const apiResponse = await fetch(`${process.env.PACMAN_API_LINK}${query}`)
+    const apiResponse = await fetch(`${process.env.PACMAN_API_LINK}${query} `)
 
     if (!apiResponse.ok) {
       return res.status(apiResponse.status).json({ error: "Failed to fetch from pacman API" })
@@ -30,7 +30,7 @@ archRouter.get("/pacman/search", async (req: Request, res: Response) => {
 
     if (!data || data.length === 0) {
       return res.status(200).json({
-        message: `Can not find any pacman package named ${query}`
+        message: `Can not find any pacman package named ${query} `
       })
     }
 
@@ -54,7 +54,7 @@ archRouter.get("/pacman/search", async (req: Request, res: Response) => {
 
 archRouter.get("/pacman/package/:pacmanid", async (req: Request, res: Response) => {
   try {
-    const pacmanId: string = req.params.pacmanid
+    const pacmanId = req.params.pacmanid as string
     const result = await pacmanGetData(pacmanId)
     res.status(200).json(result)
   } catch (err) {
@@ -76,7 +76,7 @@ archRouter.get("/aur/search", async (req: Request, res: Response) => {
       throw new BadRequestError("Query is required and must be string")
     }
 
-    const apiResponse = await fetch(`${process.env.AUR_API_LINK}${query}`)
+    const apiResponse = await fetch(`${process.env.AUR_API_LINK}${query} `)
 
     if (!apiResponse.ok) {
       return res.status(apiResponse.status).json({ error: "Failed to fetch from AUR API." })
@@ -112,6 +112,8 @@ archRouter.get("/aur/search", async (req: Request, res: Response) => {
 archRouter.get("/aur/package/:aurid", async (req: Request, res: Response) => {
   try {
     const aurId = Number(req.params.aurid)
+
+    console.log(req.params.aurid)
 
     if (!aurId && isNaN(aurId)) {
       throw new BadRequestError("AUR ID is required and must to be number")

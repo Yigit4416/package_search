@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon'; // <--- YENİ: İkon iç
 // Servisler ve Tipler
 import { ArchService } from '../../services/arch/arch-service';
 import { WingetService } from '../../services/winget/winget-service';
-import { AptService } from '../../services/debian/apt-service';
+
 import { SearchType } from '../../../types/general';
 
 @Component({
@@ -20,12 +20,12 @@ import { SearchType } from '../../../types/general';
   standalone: true,
   // MatIconModule'ü buraya imports dizisine ekledik
   imports: [
-    FormsModule, 
-    MatFormFieldModule, 
-    MatSelectModule, 
-    MatButtonModule, 
-    MatInputModule, 
-    MatIconModule 
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './main-page.html',
   styleUrls: ['./main-page.css'],
@@ -37,16 +37,16 @@ export class MainPage {
   // Services
   protected readonly archService = inject(ArchService);
   protected readonly wingetService = inject(WingetService);
-  protected readonly aptService = inject(AptService);
+
 
   // Properties
   searchTerm = signal<string>('');
-  selectedMode = signal<SearchType>({ mode: 'APT Search', modeIndex: 3 });
-  
+  selectedMode = signal<SearchType>({ mode: 'Winget Search', modeIndex: 2 });
+
   searchModes: SearchType[] = [
     { mode: 'Arch Search', modeIndex: 1 },
     { mode: 'Winget Search', modeIndex: 2 },
-    { mode: 'APT Search', modeIndex: 3 },
+
   ];
 
   // Search Logic
@@ -63,8 +63,6 @@ export class MainPage {
       this.router.navigate(['/arch', term]);
     } else if (this.selectedMode().modeIndex === 2) {
       this.router.navigate(['/winget', term]);
-    } else {
-      this.router.navigate(['/apt', term]);
     }
   }
 }

@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express"
 import { BadRequestError, NotFoundError } from "../error_class/custom-errors";
 import { WingetQueryResponse } from "../types/winget";
-import { wingetGetData, wingetStoreData } from "../db/test_temp";
+import { wingetGetData, wingetStoreData } from "../db/cache.js";
 
 const windowsRouter = express.Router()
 
 windowsRouter.get("/search", async (req: Request, res: Response) => {
   try {
-    const { query } = req.query
+    const query = req.query.query as string
 
     if (!query || typeof query !== "string") {
       throw new BadRequestError("Query is required")
@@ -55,7 +55,7 @@ windowsRouter.get("/search", async (req: Request, res: Response) => {
 
 windowsRouter.get("/package/:wingetid", async (req: Request, res: Response) => {
   try {
-    const wingetId: string = req.params.wingetid;
+    const wingetId: string = req.params.wingetid as string;
     const result = wingetGetData(wingetId);
 
     res.status(200).json(result);

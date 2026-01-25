@@ -22,12 +22,7 @@ export const routes: Routes = [
     pathMatch: 'full',
     component: ArchPage
   },
-  {
-    title: 'APT',
-    path: 'apt/:packagename',
-    pathMatch: 'full',
-    redirectTo: 'home',
-  },
+
   {
     title: 'winget',
     path: 'winget/:packagename',

@@ -12,10 +12,10 @@ import { SearchType } from '../../../types/general'; // Types dosyanın yolu
   selector: 'app-compact-search',
   standalone: true,
   imports: [
-    FormsModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
-    MatIconModule, 
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
     MatButtonModule,
     MatSelectModule // Select modülü eklendi
   ],
@@ -80,24 +80,24 @@ export class CompactSearchComponent implements OnInit {
 
   // Parent'tan gelen bilgi: 'winget' | 'apt' | 'arch'
   // Örnek kullanım: <app-compact-search activeContext="winget" />
-  activeContext = input<string>('winget'); 
+  activeContext = input<string>('winget');
 
   query = signal('');
-  
+
   // Varsayılan mod (OnInit'te güncellenecek)
   selectedMode = signal<SearchType>({ mode: 'Winget Search', modeIndex: 2 });
 
   searchModes: SearchType[] = [
     { mode: 'Arch', modeIndex: 1 },
     { mode: 'Winget', modeIndex: 2 },
-    { mode: 'APT', modeIndex: 3 },
+
   ];
 
   ngOnInit() {
     // Sayfa açıldığında parent'tan gelen bilgiye göre dropdown'ı ayarla
-    const contextMap: {[key: string]: number} = { 'arch': 1, 'winget': 2, 'apt': 3 };
+    const contextMap: { [key: string]: number } = { 'arch': 1, 'winget': 2 };
     const targetIndex = contextMap[this.activeContext()] || 2;
-    
+
     const foundMode = this.searchModes.find(m => m.modeIndex === targetIndex);
     if (foundMode) {
       this.selectedMode.set(foundMode);
@@ -117,8 +117,6 @@ export class CompactSearchComponent implements OnInit {
       this.router.navigate(['/arch', term]);
     } else if (currentModeIndex === 2) {
       this.router.navigate(['/winget', term]);
-    } else {
-      this.router.navigate(['/apt', term]);
     }
   }
 }
