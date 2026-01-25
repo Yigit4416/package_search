@@ -48,7 +48,7 @@ export class WingetPage {
     if (!this.wingetService.loading()) {
       const dialogRef = this.dialgogRef.open(WingetDialog, {
         data: { packageName: selectedPackage },
-        
+
         // 1. Responsive Width:
         // Occupy full width on mobile, but cap it at 650px on desktop
         width: '90%',
@@ -57,18 +57,12 @@ export class WingetPage {
         // 2. Auto Height:
         // Remove 'height' property. Let the content dictate the height.
         // Add maxHeight to ensure it doesn't overflow the screen.
-        maxHeight: '90vh', 
-        
+        maxHeight: '90vh',
+
         // 3. Optional: Prevent auto-focusing the first button (aesthetic choice)
-        autoFocus: false 
+        autoFocus: false
       });
     }
-  }
-
-  handleSearch(searchTerm: string) {
-    console.log('Filtreleniyor:', searchTerm);
-    // Buraya servisi çağıran kod gelecek
-    // Örn: this.wingetService.search(searchTerm);
   }
 
   ngOnInit() {

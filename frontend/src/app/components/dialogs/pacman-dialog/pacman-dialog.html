@@ -1,0 +1,55 @@
+@if (!info()) {
+<div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading package details...</p>
+</div>
+} @else {
+<h2 mat-dialog-title class="dialog-title">
+    {{ info()?.pkgname || 'Unknown Package' }}
+    <span class="publisher-text">Repository: {{ info()?.repo || 'Unknown' }}</span>
+</h2>
+
+<mat-dialog-content>
+    <div class="meta-row">
+        <span class="badge version-badge">v{{ latestVersion() }}</span>
+        <span class="badge id-badge">Arch: {{ info()?.arch }}</span>
+        <span class="badge license-badge">{{ info()?.licenses?.[0] || 'Unknown License' }}</span>
+        <span class="badge id-badge">Size: {{ (info()?.installed_size || 0) / 1024 | number:'1.0-2' }} KB</span>
+    </div>
+
+    <div class="description-section">
+        <p>{{ info()?.pkgdesc || 'No description provided.' }}</p>
+    </div>
+
+    @if (info()?.groups?.length) {
+    <div class="tags-section">
+        <mat-chip-set>
+            @for (group of info()?.groups; track group) {
+            <mat-chip>{{ group }}</mat-chip>
+            }
+        </mat-chip-set>
+    </div>
+    }
+
+    <div class="install-snippet">
+        <code>&gt; {{ installCommand() }}</code>
+        <button mat-icon-button (click)="copyCommand()" [matTooltip]="copied() ? 'Copied!' : 'Copy command'">
+            <mat-icon>{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
+        </button>
+    </div>
+
+    <div class="links-section">
+        <button mat-button color="primary" (click)="openLink(info()?.url)">
+            <mat-icon>language</mat-icon> Website
+        </button>
+        <button mat-button color="accent"
+            (click)="openLink('https://archlinux.org/packages/' + info()?.repo + '/' + info()?.arch + '/' + info()?.pkgname + '/')">
+            <mat-icon>open_in_new</mat-icon> Arch Page
+        </button>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">Close</button>
+</mat-dialog-actions>
+}

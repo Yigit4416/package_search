@@ -23,13 +23,13 @@ export class ArchService {
     this.pacmanGeneralSearchResult.set([])
     this.error.set(null)
 
-    this.httpClient.get<ArchPackageQueryResponse>(`http://localhost:3000/api/arch/pacman/search?query=${query}`)
+    this.httpClient.get<ArchPackageQueryResponse>(`http://localhost:8000/api/arch/pacman/search?query=${query}`)
       .pipe(
         finalize(() => this.loading.set(false))
       )
       .subscribe({
         next: (data: ArchPackageQueryResponse) => {
-          this.pacmanGeneralSearchResult.set(data.data)
+          this.pacmanGeneralSearchResult.set(data.data ?? [])
         },
         error: (err: HttpErrorResponse) => {
           // clear previous results if that's desired behavior
@@ -56,7 +56,7 @@ export class ArchService {
     this.pacmanSpecificPackageResult.set(null)
     this.error.set(null)
 
-    this.httpClient.get<ArchPackage>(`http://localhost:3000/api/arch/pacman/package/${query}`)
+    this.httpClient.get<ArchPackage>(`http://localhost:8000/api/arch/pacman/package/${query}`)
       .pipe(
         finalize(() => this.loading.set(false))
       )
@@ -89,7 +89,7 @@ export class ArchService {
     this.aurGeneralSearchResult.set(null)
     this.error.set(null)
 
-    this.httpClient.get<AurQueryResponse>(`http://localhost:3000/api/arch/aur/search?query=${query}`)
+    this.httpClient.get<AurQueryResponse>(`http://localhost:8000/api/arch/aur/search?query=${query}`)
       .pipe(
         finalize(() => this.loading.set(false))
       )
@@ -122,7 +122,7 @@ export class ArchService {
     this.aurSpecificPackageResult.set(null)
     this.error.set(null)
 
-    this.httpClient.get<AurPackage>(`http://localhost:3000/api/arch/aur/package/${query}`)
+    this.httpClient.get<AurPackage>(`http://localhost:8000/api/arch/aur/package/${query}`)
       .pipe(
         finalize(() => this.loading.set(false))
       )

@@ -1,0 +1,57 @@
+@if (!info()) {
+<div class="loading-container">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading package details...</p>
+</div>
+} @else {
+<h2 mat-dialog-title class="dialog-title">
+  {{ info()?.Name || 'Unknown Package' }}
+  <span class="publisher-text">by {{ info()?.Maintainer || 'Unknown' }}</span>
+</h2>
+
+<mat-dialog-content>
+  <div class="meta-row">
+    <span class="badge version-badge">v{{ latestVersion() }}</span>
+    <span class="badge id-badge">ID: {{ info()?.ID }}</span>
+    <span class="badge license-badge">{{ info()?.License?.[0] || 'Unknown License' }}</span>
+    <span class="badge id-badge" style="display: flex; align-items: center; gap: 4px;">
+      <mat-icon style="font-size: 14px; width: 14px; height: 14px;">thumb_up</mat-icon>
+      {{ info()?.NumVotes || 0 }}
+    </span>
+  </div>
+
+  <div class="description-section">
+    <p>{{ info()?.Description || 'No description provided by the maintainer.' }}</p>
+  </div>
+
+  @if (info()?.Keywords?.length) {
+  <div class="tags-section">
+    <mat-chip-set>
+      @for (tag of info()?.Keywords; track tag) {
+      <mat-chip>{{ tag }}</mat-chip>
+      }
+    </mat-chip-set>
+  </div>
+  }
+
+  <div class="install-snippet">
+    <code>&gt; {{ installCommand() }}</code>
+    <button mat-icon-button (click)="copyCommand()" [matTooltip]="copied() ? 'Copied!' : 'Copy command'">
+      <mat-icon>{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
+    </button>
+  </div>
+
+  <div class="links-section">
+    <button mat-button color="primary" (click)="openLink(info()?.URL)">
+      <mat-icon>language</mat-icon> Website
+    </button>
+    <button mat-button color="accent" (click)="openLink('https://aur.archlinux.org/packages/' + info()?.Name)">
+      <mat-icon>open_in_new</mat-icon> AUR Page
+    </button>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="closeDialog()">Close</button>
+</mat-dialog-actions>
+}
