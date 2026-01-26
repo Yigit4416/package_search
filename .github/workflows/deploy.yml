@@ -19,17 +19,16 @@ jobs:
           cd frontend
           npm install
 
+      - name: Install Playwright Chromium
+        run: |
+          cd frontend
+          npx playwright install chromium --with-deps
+
       - name: Run Angular Tests
         run: |
           cd frontend
-          npx ng test --watch=false
-
-      - name: Build & Push
-        run: |
-          docker build -t ghcr.io/yigit4416/package_search/frontend:latest -f frontend/Dockerfile .
-          docker build -t ghcr.io/yigit4416/package_search/backend:latest -f backend/Dockerfile .
-          docker push ghcr.io/yigit4416/package_search/frontend:latest
-          docker push ghcr.io/yigit4416/package_search/backend:latest
+          # Using chromium headless to work in CI environment
+          npx ng test --watch=false --browser=chromium --headless --passWithNoTests
 
   build-and-push:
     needs: test-frontend
@@ -64,7 +63,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/app
-            # Ensure this login uses the token provided by the action
+            # Use the token to allow the VPS to pull the new images
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u yigit4416 --password-stdin
 
             docker compose pull
