@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { WingetPackage, WingetQueryResponse } from '../../../types/winget';
 import { finalize } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class WingetService {
     this.error.set(null);
 
     this.httpClient
-      .get<WingetQueryResponse>(`http://localhost:8000/api/winget/search?query=${query}`)
+      .get<WingetQueryResponse>(`${environment.apiUrl}/api/winget/search?query=${query}`)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         // SUCCESS CASE
@@ -55,7 +56,7 @@ export class WingetService {
     this.error.set(null);
 
     this.httpClient
-      .get<WingetPackage>(`http://localhost:8000/api/winget/package/${query}`)
+      .get<WingetPackage>(`${environment.apiUrl}/api/winget/package/${query}`)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (data: WingetPackage) => {

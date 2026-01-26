@@ -13,8 +13,9 @@ app.use("/", (_req: Request, res: Response) => {
   res.json({ message: "Everything is fine for now..." });
 });
 
-const PORT = process.env.PORT || 3000;
+// Parse the port and provide a fallback
+const PORT = Number(process.env.PORT) || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });

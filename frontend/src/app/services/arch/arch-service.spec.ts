@@ -1,9 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ArchService } from "./arch-service"
+import { ArchService } from './arch-service';
 // Ensure these imports match your actual file path
-import { ArchPackage, ArchPackageQueryResponse, AurPackage, AurQueryResponse } from '../../../types/arch';
+import {
+  ArchPackage,
+  ArchPackageQueryResponse,
+  AurPackage,
+  AurQueryResponse,
+} from '../../../types/arch';
+import { environment } from '../../../environments/environment';
 
 describe('ArchService', () => {
   let service: ArchService;
@@ -12,11 +18,7 @@ describe('ArchService', () => {
   beforeEach(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      providers: [
-        ArchService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ]
+      providers: [ArchService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(ArchService);
@@ -37,15 +39,19 @@ describe('ArchService', () => {
   describe('pacmanGeneralSearch', () => {
     it('should update pacmanGeneralSearchResult signal on success', () => {
       const mockQuery = 'firefox';
-      const mockPackages: ArchPackage[] = [{ pkgname: 'firefox', pkgver: '120.0' } as unknown as ArchPackage];
-      const mockResponse: ArchPackageQueryResponse = { data: mockPackages } as unknown as ArchPackageQueryResponse;
+      const mockPackages: ArchPackage[] = [
+        { pkgname: 'firefox', pkgver: '120.0' } as unknown as ArchPackage,
+      ];
+      const mockResponse: ArchPackageQueryResponse = {
+        data: mockPackages,
+      } as unknown as ArchPackageQueryResponse;
 
       service.pacmanGeneralSearch(mockQuery);
 
       expect(service.loading()).toBeTruthy();
       expect(service.error()).toBeNull();
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/pacman/search?query=${mockQuery}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/pacman/search?query=${mockQuery}`);
       expect(req.request.method).toBe('GET');
       req.flush(mockResponse);
 
@@ -73,7 +79,7 @@ describe('ArchService', () => {
 
       expect(service.loading()).toBeTruthy();
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/pacman/package/${mockQuery}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/pacman/package/${mockQuery}`);
       req.flush(mockPackage);
 
       expect(service.pacmanSpecificPackageResult()).toEqual(mockPackage);
@@ -99,7 +105,7 @@ describe('ArchService', () => {
       const mockQuery = 'yay';
       const mockResponse: AurQueryResponse = {
         resultcount: 1,
-        results: [{ Name: 'yay', Version: '1.0' }]
+        results: [{ Name: 'yay', Version: '1.0' }],
       } as unknown as AurQueryResponse;
 
       // 1. Trigger
@@ -110,7 +116,7 @@ describe('ArchService', () => {
       expect(service.error()).toBeNull();
 
       // 3. Expect Request
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/aur/search?query=${mockQuery}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/aur/search?query=${mockQuery}`);
       expect(req.request.method).toBe('GET');
 
       // 4. Flush
@@ -124,7 +130,7 @@ describe('ArchService', () => {
     it('should handle 404 errors', () => {
       service.aurGeneralSearch('ghost-package');
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/aur/search?query=ghost-package`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/aur/search?query=ghost-package`);
       req.flush('Not Found', { status: 404, statusText: 'Not Found' });
 
       expect(service.aurGeneralSearchResult()).toBeNull();
@@ -142,7 +148,7 @@ describe('ArchService', () => {
 
       expect(service.loading()).toBeTruthy();
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/aur/package/${mockQuery}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/aur/package/${mockQuery}`);
       expect(req.request.method).toBe('GET');
 
       req.flush(mockPackage);
@@ -156,7 +162,7 @@ describe('ArchService', () => {
     it('should handle 500 errors', () => {
       service.aurSpecificPackage('broken-aur');
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/arch/aur/package/broken-aur`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/arch/aur/package/broken-aur`);
       req.flush('Server Error', { status: 500, statusText: 'Error' });
 
       expect(service.aurSpecificPackageResult()).toBeNull();

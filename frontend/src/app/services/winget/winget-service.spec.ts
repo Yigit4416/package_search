@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { WingetService } from "./winget-service"; // Ensure this path matches your file structure
+import { WingetService } from './winget-service'; // Ensure this path matches your file structure
 import { WingetPackage, WingetQueryResponse } from '../../../types/winget'; // Adjust path
+import { environment } from '../../../environments/environment';
 
 describe('WingetService', () => {
   let service: WingetService;
@@ -17,7 +18,7 @@ describe('WingetService', () => {
         // 2. Provide the modern HTTP testing tools
         provideHttpClient(),
         provideHttpClientTesting(),
-      ]
+      ],
     });
 
     service = TestBed.inject(WingetService);
@@ -37,7 +38,9 @@ describe('WingetService', () => {
     it('should update wingetSearch signal on success', () => {
       const mockQuery = 'vscode';
       // Note: If your actual code uses pkg.Latest.Name, you might need to nest this in the mock
-      const mockPackages: WingetPackage[] = [{ Id: 'Microsoft.VSCode', Name: 'Visual Studio Code' } as unknown as WingetPackage];
+      const mockPackages: WingetPackage[] = [
+        { Id: 'Microsoft.VSCode', Name: 'Visual Studio Code' } as unknown as WingetPackage,
+      ];
       const mockResponse: WingetQueryResponse = { data: { Packages: mockPackages } } as any;
 
       // 1. Trigger the search
@@ -48,7 +51,7 @@ describe('WingetService', () => {
       expect(service.error()).toBeNull();
 
       // 3. Expect an HTTP request to the specific URL
-      const req = httpMock.expectOne(`http://localhost:8000/api/winget/search?query=${mockQuery}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/winget/search?query=${mockQuery}`);
       expect(req.request.method).toBe('GET');
 
       // 4. Flush (respond) with mock data
@@ -62,7 +65,7 @@ describe('WingetService', () => {
     it('should handle 404 errors correctly', () => {
       service.wingetGeneralSearch('unknown-app');
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/winget/search?query=unknown-app`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/winget/search?query=unknown-app`);
 
       // Simulate a 404 error
       req.flush('Not Found', { status: 404, statusText: 'Not Found' });
@@ -76,13 +79,16 @@ describe('WingetService', () => {
   describe('wingetSpecificSearch', () => {
     it('should update wingetPackageSpecific signal on success', () => {
       const mockId = 'Microsoft.VSCode';
-      const mockPackage: WingetPackage = { Id: mockId, Name: 'Visual Studio Code' } as unknown as WingetPackage;
+      const mockPackage: WingetPackage = {
+        Id: mockId,
+        Name: 'Visual Studio Code',
+      } as unknown as WingetPackage;
 
       service.wingetSpecificSearch(mockId);
 
       expect(service.loading()).toBeTruthy();
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/${mockId}`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/winget/package/${mockId}`);
       expect(req.request.method).toBe('GET');
 
       req.flush(mockPackage);
@@ -94,7 +100,7 @@ describe('WingetService', () => {
     it('should handle 400 Bad Request errors', () => {
       service.wingetSpecificSearch('invalid/id');
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/invalid/id`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/winget/package/invalid/id`);
 
       // Simulate a 400 error
       req.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
@@ -107,7 +113,7 @@ describe('WingetService', () => {
     it('should handle generic 500 errors', () => {
       service.wingetSpecificSearch('broken-server');
 
-      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/broken-server`);
+      const req = httpMock.expectOne(`${environment.apiUrl}/api/winget/package/broken-server`);
 
       // Simulate a 500 error
       req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
