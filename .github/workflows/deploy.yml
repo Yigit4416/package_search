@@ -2,18 +2,32 @@ name: Deploy ojrd.space
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install & Test
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
         run: |
           cd frontend
           npm install
-          npx ng test --watch=false --browsers=ChromeHeadless
+
+      - name: Install Playwright Chromium
+        run: |
+          cd frontend
+          npx playwright install chromium --with-deps
+
+      - name: Run Angular Tests
+        run: |
+          cd frontend
+          npx ng test --watch=false --browser=chromium --headless --passWithNoTests
 
   build-and-push:
     needs: test-frontend
