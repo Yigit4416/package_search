@@ -13,7 +13,7 @@ windowsRouter.get("/search", async (req: Request, res: Response) => {
       throw new BadRequestError("Query is required")
     }
 
-    const apiResponse = await fetch(`${process.env.WINGET_API_LINK}/${query}`);
+    const apiResponse = await fetch(`${process.env.WINGET_API_LINK}${query}`);
 
     if (!apiResponse.ok) {
       return res.status(apiResponse.status).json({
@@ -38,7 +38,7 @@ windowsRouter.get("/search", async (req: Request, res: Response) => {
     res.status(200).json({ query, data } as WingetQueryResponse);
 
   } catch (err) {
-    console.error("Error on /arch/pacman/search", err);
+    console.error("Error on /winget/search", err);
 
     if (err instanceof NotFoundError) {
       return res.status(err.statusCode).json({ error: err.message })

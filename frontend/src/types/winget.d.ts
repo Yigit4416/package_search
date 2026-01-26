@@ -1,6 +1,6 @@
 export type WingetPackage = {
   Id: string;
-  Versions: Versions[];
+  Versions: WingetVersion[];
   Latest: {
     Name: string;
     Publisher: string;
@@ -14,20 +14,21 @@ export type WingetPackage = {
   IconUrl: string | null;
   Banner: string | null;
   Logo: string | null;
-  UpdatedAt: string;
-  CreatedAt: string;
-  createdAt: string;
+  // Usually, pick one casing style for your internal API
   updatedAt: string;
+  createdAt: string;
   SearchScore: number;
 };
 
-type Versions = {
+type WingetVersion = {
   version: string;
 }
 
 export type WingetQueryResponse = {
   query: string;
-  data: {
+  // Use optional (?) so TypeScript forces you to check if 'data' exists
+  data?: {
     Packages: WingetPackage[];
   };
+  message?: string; // To capture the "Can't find package" string
 };

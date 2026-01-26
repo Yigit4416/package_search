@@ -21,14 +21,22 @@ export class WingetService {
     this.error.set(null);
 
     this.httpClient
-      .get<WingetQueryResponse>(`${environment.apiUrl}/api/winget/search?query=${query}`)
+      .get<WingetQueryResponse>(`${environment.apiUrl}/winget/search?query=${query}`)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         // SUCCESS CASE
         next: (data: WingetQueryResponse) => {
-          const realData = data.data.Packages;
-          this.wingetSearch.set(realData);
-          console.log(realData);
+          // Use optional chaining to prevent the crash
+          const realData = data?.data?.Packages; 
+
+          if (realData) {
+            this.wingetSearch.set(realData);
+            console.log("Packages found:", realData);
+          } else {
+            // This handles the "Can't find any package" case from Express
+            this.wingetSearch.set([]);
+            this.error.set(data?.message || 'No packages found.');
+          }
         },
 
         // ERROR CASE
@@ -56,7 +64,7 @@ export class WingetService {
     this.error.set(null);
 
     this.httpClient
-      .get<WingetPackage>(`${environment.apiUrl}/api/winget/package/${query}`)
+      .get<WingetPackage>(`${environment.apiUrl}/winget/package/${query}`)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (data: WingetPackage) => {
