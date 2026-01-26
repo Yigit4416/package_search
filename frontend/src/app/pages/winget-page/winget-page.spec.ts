@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
 import { WingetPage } from './winget-page';
 
 describe('WingetPage', () => {
@@ -8,9 +8,10 @@ describe('WingetPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WingetPage]
+      imports: [WingetPage],
+      providers: [provideRouter([])]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(WingetPage);
     component = fixture.componentInstance;

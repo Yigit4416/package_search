@@ -9,6 +9,7 @@ describe('WingetService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
         // 1. Provide the Service
@@ -47,7 +48,7 @@ describe('WingetService', () => {
       expect(service.error()).toBeNull();
 
       // 3. Expect an HTTP request to the specific URL
-      const req = httpMock.expectOne(`http://localhost:3000/api/winget/search?query=${mockQuery}`);
+      const req = httpMock.expectOne(`http://localhost:8000/api/winget/search?query=${mockQuery}`);
       expect(req.request.method).toBe('GET');
 
       // 4. Flush (respond) with mock data
@@ -61,7 +62,7 @@ describe('WingetService', () => {
     it('should handle 404 errors correctly', () => {
       service.wingetGeneralSearch('unknown-app');
 
-      const req = httpMock.expectOne(`http://localhost:3000/api/winget/search?query=unknown-app`);
+      const req = httpMock.expectOne(`http://localhost:8000/api/winget/search?query=unknown-app`);
 
       // Simulate a 404 error
       req.flush('Not Found', { status: 404, statusText: 'Not Found' });
@@ -81,7 +82,7 @@ describe('WingetService', () => {
 
       expect(service.loading()).toBeTruthy();
 
-      const req = httpMock.expectOne(`http://localhost:3000/api/winget/package/${mockId}`);
+      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/${mockId}`);
       expect(req.request.method).toBe('GET');
 
       req.flush(mockPackage);
@@ -93,7 +94,7 @@ describe('WingetService', () => {
     it('should handle 400 Bad Request errors', () => {
       service.wingetSpecificSearch('invalid/id');
 
-      const req = httpMock.expectOne(`http://localhost:3000/api/winget/package/invalid/id`);
+      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/invalid/id`);
 
       // Simulate a 400 error
       req.flush('Bad Request', { status: 400, statusText: 'Bad Request' });
@@ -106,7 +107,7 @@ describe('WingetService', () => {
     it('should handle generic 500 errors', () => {
       service.wingetSpecificSearch('broken-server');
 
-      const req = httpMock.expectOne(`http://localhost:3000/api/winget/package/broken-server`);
+      const req = httpMock.expectOne(`http://localhost:8000/api/winget/package/broken-server`);
 
       // Simulate a 500 error
       req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });

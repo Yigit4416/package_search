@@ -1,6 +1,6 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -77,6 +77,7 @@ import { SearchType } from '../../../types/general'; // Types dosyanın yolu
 })
 export class CompactSearchComponent implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // Parent'tan gelen bilgi: 'winget' | 'apt' | 'arch'
   // Örnek kullanım: <app-compact-search activeContext="winget" />
@@ -94,13 +95,20 @@ export class CompactSearchComponent implements OnInit {
   ];
 
   ngOnInit() {
-    // Sayfa açıldığında parent'tan gelen bilgiye göre dropdown'ı ayarla
+    // 1. Context'i ayarla (Case-insensitive)
     const contextMap: { [key: string]: number } = { 'arch': 1, 'winget': 2 };
-    const targetIndex = contextMap[this.activeContext()] || 2;
+    const contextKey = this.activeContext().toLowerCase();
+    const targetIndex = contextMap[contextKey] || 2;
 
     const foundMode = this.searchModes.find(m => m.modeIndex === targetIndex);
     if (foundMode) {
       this.selectedMode.set(foundMode);
+    }
+
+    // 2. URL'den query'i al (Eğer reload yapıldıysa input dolsun)
+    const routeParam = this.route.snapshot.paramMap.get('packagename');
+    if (routeParam) {
+      this.query.set(routeParam);
     }
   }
 

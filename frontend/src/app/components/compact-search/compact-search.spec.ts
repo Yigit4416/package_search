@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { CompactSearchComponent } from './compact-search';
 
-import { CompactSearch } from './compact-search';
-
-describe('CompactSearch', () => {
-  let component: CompactSearch;
-  let fixture: ComponentFixture<CompactSearch>;
+describe('CompactSearchComponent', () => {
+  let component: CompactSearchComponent;
+  let fixture: ComponentFixture<CompactSearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CompactSearch]
+      imports: [CompactSearchComponent],
+      providers: [provideRouter([])]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(CompactSearch);
+    fixture = TestBed.createComponent(CompactSearchComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
