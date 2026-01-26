@@ -19,11 +19,6 @@ jobs:
           cd frontend
           npm install
 
-      - name: Install Playwright Chromium
-        run: |
-          cd frontend
-          npx playwright install chromium --with-deps
-
       - name: Run Angular Tests
         run: |
           cd frontend
@@ -42,10 +37,13 @@ jobs:
 
       - name: Build & Push
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/ojrd-frontend:latest -f frontend/Dockerfile .
-          docker build -t ghcr.io/${{ github.repository_owner }}/ojrd-backend:latest -f backend/Dockerfile .
-          docker push ghcr.io/${{ github.repository_owner }}/ojrd-frontend:latest
-          docker push ghcr.io/${{ github.repository_owner }}/ojrd-backend:latest
+          IMAGE_BASE=ghcr.io/yigit4416/package_search
+
+          docker build -t $IMAGE_BASE/frontend:latest -f frontend/Dockerfile .
+          docker build -t $IMAGE_BASE/backend:latest -f backend/Dockerfile .
+
+          docker push $IMAGE_BASE/frontend:latest
+          docker push $IMAGE_BASE/backend:latest
 
   deploy:
     needs: build-and-push
