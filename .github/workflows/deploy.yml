@@ -27,7 +27,7 @@ jobs:
       - name: Run Angular Tests
         run: |
           cd frontend
-          npx ng test --watch=false --browser=chromium --headless --passWithNoTests
+          npx ng test --watch=false
 
   build-and-push:
     needs: test-frontend
