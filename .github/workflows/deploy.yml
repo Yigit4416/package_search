@@ -19,16 +19,11 @@ jobs:
           cd frontend
           npm install
 
-      - name: Install Playwright Chromium
-        run: |
-          cd frontend
-          npx playwright install chromium --with-deps
-
       - name: Run Angular Tests
         run: |
           cd frontend
           # Using chromium headless to work in CI environment
-          npx ng test --watch=false --browser=chromium --headless --passWithNoTests
+          npx ng test --watch=false
 
   build-and-push:
     needs: test-frontend
