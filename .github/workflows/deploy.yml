@@ -24,6 +24,13 @@ jobs:
           cd frontend
           npx ng test --watch=false
 
+      - name: Build & Push
+        run: |
+          docker build -t ghcr.io/yigit4416/package_search/frontend:latest -f frontend/Dockerfile .
+          docker build -t ghcr.io/yigit4416/package_search/backend:latest -f backend/Dockerfile .
+          docker push ghcr.io/yigit4416/package_search/frontend:latest
+          docker push ghcr.io/yigit4416/package_search/backend:latest
+
   build-and-push:
     needs: test-frontend
     runs-on: ubuntu-latest
@@ -57,7 +64,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/app
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Ensure this login uses the token provided by the action
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u yigit4416 --password-stdin
+
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
