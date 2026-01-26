@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
-import { BadRequestError, NotFoundError } from "../error_class/custom-errors";
-import { WingetQueryResponse } from "../types/winget";
+import { BadRequestError, NotFoundError } from "../error_class/custom-errors.js";
+import { WingetQueryResponse } from "../types/winget.js";
 import { wingetGetData, wingetStoreData } from "../db/cache.js";
 
 const windowsRouter = express.Router()

@@ -1,9 +1,9 @@
 import dotenv from "dotenv"
 import express, { Request, Response } from "express"
-import { BadRequestError, NotFoundError } from "../error_class/custom-errors"
-import { ArchPackage, ArchPackageQueryResponse, ArchPackageSearchResponse } from "../types/pacman"
+import { BadRequestError, NotFoundError } from "../error_class/custom-errors.js"
+import { ArchPackage, ArchPackageQueryResponse, ArchPackageSearchResponse } from "../types/pacman.js"
 import { aurGetData, aurStoreData, pacmanGetData, pacmanStoreData } from "../db/cache.js";
-import { AurQueryResponse, AurResponse } from "../types/aur"
+import { AurQueryResponse, AurResponse } from "../types/aur.js"
 
 dotenv.config()
 const archRouter = express.Router()
