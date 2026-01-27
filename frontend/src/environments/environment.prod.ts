@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://ojrd.space/api', // Your production domain
+  apiUrl: 'https://packages.ojrd.space/api', // Your production domain
 };
